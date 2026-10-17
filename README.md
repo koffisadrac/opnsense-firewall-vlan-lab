@@ -1,16 +1,15 @@
-# 🔥 OPNsense Firewall & VLAN Lab
+## OPNsense Firewall & VLAN Lab
 
-> Volet pare-feu du projet **NovaTech** — Projet d'intégration II, AEC Sécurité et réseaux informatiques
-> **Kanga Koffi Sadrac (KKS)** — octobre 2026
+> Volet pare-feu du projet **NovaTech** — Projet d'intégration II, 
 >
 > 📦 Projet complet (Active Directory, partages, VPN, sauvegarde, rapport) : **[novatech-infrastructure](https://github.com/koffisadrac/novatech-infrastructure)**
 
-## 📌 Présentation du projet
+## Présentation du projet
 
 Ce laboratoire présente la partie réseau et pare-feu de l'infrastructure NovaTech, une PME fictive de 24 employés et 6 consultants.
 J'ai utilisé OPNsense (FW01) comme pare-feu et routeur central. Il segmente le réseau en VLAN selon le niveau de confiance et contrôle chaque flux entre les zones.
 
-## 🎯 Objectifs
+## Objectifs
 
 - Segmenter le réseau par niveau de confiance (serveurs, administration, employés, consultants, invités)
 - Bloquer par défaut tout trafic entre les VLAN et n'autoriser que les flux nécessaires
@@ -19,7 +18,7 @@ J'ai utilisé OPNsense (FW01) comme pare-feu et routeur central. Il segmente le 
 - Offrir un accès distant sécurisé avec WireGuard
 - Prouver l'isolement par des tests positifs et négatifs
 
-## 🧰 Environnement du laboratoire
+## Environnement du laboratoire
 
 | Élément | Détail |
 |---|---|
@@ -29,12 +28,12 @@ J'ai utilisé OPNsense (FW01) comme pare-feu et routeur central. Il segmente le 
 | Clients de test | Windows 11, Windows 10, Kali Linux, Ubuntu Desktop |
 | Réseaux virtuels | VMnet8 (WAN/NAT), VMnet1 à 5 (segments internes) |
 
-## 🗺️ Architecture réseau
+## Architecture réseau
 
 Toutes les zones passent par OPNsense : aucun segment ne communique directement avec un autre.
 Le WAN sort vers Internet par le NAT de VMware ; chaque VLAN interne a sa passerelle sur FW01.
 
-## 🌐 Plan VLAN et adressage IP
+## Plan VLAN et adressage IP
 
 | VLAN | Nom | Réseau | Passerelle | Accès |
 |---|---|---|---|---|
@@ -45,14 +44,14 @@ Le WAN sort vers Internet par le NAT de VMware ; chaque VLAN interne a sa passer
 | 90 | INVITÉS | 10.10.90.0/24 | 10.10.90.1 | Internet seulement |
 | — | VPN | 10.10.200.0/24 | 10.10.200.1 | ICMP + SSH vers DC01 |
 
-## ⚙️ Configuration OPNsense
+## Configuration OPNsense
 
 - **Interfaces** : WAN en DHCP (VMnet8) ; SERVERS, ADMIN, EMPLOYES, CONSULTANTS et GUEST en adresses statiques.
 - **DHCP** : le serveur intégré est désactivé. *Services › DHCRelay* relaie les requêtes des VLAN vers **Kea sur DC01 (10.10.10.10)**.
 - **DNS** : les postes internes utilisent DC01 ; seul le VLAN INVITÉS utilise des résolveurs publics.
 - **VPN** : instance WireGuard `wg-admin` (10.10.200.1/24, UDP 51820), un pair par utilisateur.
 
-## 🧱 Règles de pare-feu
+## Règles de pare-feu
 
 Les règles sont évaluées de haut en bas. Tout ce qui n'est pas autorisé est bloqué.
 
@@ -68,7 +67,7 @@ Les règles sont évaluées de haut en bas. Tout ce qui n'est pas autorisé est 
 | WAN | Pass | any | WAN address | UDP 51820 | WireGuard |
 | WireGuard | Pass | 10.10.200.0/24 | DC01 | ICMP, TCP 22 | Accès VPN limité |
 
-## 🌍 NAT et accès Internet
+## NAT et accès Internet
 
 Le NAT sortant automatique d'OPNsense traduit les adresses internes vers l'adresse WAN.
 Aucune redirection de port n'expose les services internes (AD, DNS, SMB). Seul le port UDP 51820 de WireGuard est ouvert sur le WAN.
