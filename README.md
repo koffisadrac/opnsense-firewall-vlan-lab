@@ -2,7 +2,7 @@
 
 > Volet pare-feu du projet **NovaTech** — Projet d'intégration II, 
 >
-> 📦 Projet complet (Active Directory, partages, VPN, sauvegarde, rapport) : **[novatech-infrastructure](https://github.com/koffisadrac/novatech-infrastructure)**
+> Projet complet (Active Directory, partages, VPN, sauvegarde, rapport) : **[novatech-infrastructure](https://github.com/koffisadrac/novatech-infrastructure)**
 
 ## Présentation du projet
 
